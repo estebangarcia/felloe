@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/dop251/goja"
 	"github.com/dop251/goja_nodejs/require"
+	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 )
@@ -24,7 +25,7 @@ func init() {
 	rootCmd.AddCommand(runCmd)
 }
 
-var defaultFn func()
+var defaultFn func() []interface{}
 
 func run(cmd *cobra.Command, args []string) error {
 	fileContent, err := ioutil.ReadFile(args[0])
@@ -43,6 +44,7 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	registry := require.NewRegistryWithLoader(loader.Load)
+	loader.InitNativeModules(registry)
 
 	vm := goja.New()
 	vm.SetFieldNameMapper(goja.UncapFieldNameMapper())
@@ -62,7 +64,23 @@ func run(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	defaultFn()
+	yamlOutput := ""
+	res := defaultFn()
+
+	for _, k8sObject := range res {
+		y, err := yaml.Marshal(&k8sObject)
+		if err != nil {
+			return err
+		}
+
+		yamlOutput = yamlOutput + "---\n" + string(y)
+	}
+
+	fmt.Println(yamlOutput)
+
+
+
+
 
 	return nil
 }

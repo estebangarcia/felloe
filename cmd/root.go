@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 )
 
 var logLevel string
+var KubeNamespace string
+var KubeConfigContext string
 
 var rootCmd = &cobra.Command{
 	Use:   "felloe",
@@ -29,7 +32,11 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&logLevel, "loglevel", "l", "info", "Set logger level [trace, debug, info, error, fatal]")
+	rootCmd.PersistentFlags().StringVarP(&KubeNamespace, "namespace", "n", "", "namespace scope")
+	rootCmd.PersistentFlags().StringVar(&KubeConfigContext, "kube-context","", "name of the kubeconfig context to use")
+	rootCmd.PersistentFlags().StringVarP(&logLevel, "loglevel", "l", "info", "set logger level [trace, debug, info, error, fatal]")
+
+	viper.BindPFlags(rootCmd.PersistentFlags())
 }
 
 func Execute() {

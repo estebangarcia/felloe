@@ -3,6 +3,9 @@ package loader
 import (
 	"errors"
 	"felloe/compiler"
+	"felloe/js/modules"
+	"felloe/js/modules/k8s"
+	"fmt"
 	"github.com/dop251/goja_nodejs/require"
 	"io/ioutil"
 	"os"
@@ -11,6 +14,7 @@ import (
 )
 
 func Load(path string) ([]byte, error) {
+	fmt.Println(path)
 	modulePath := path
 
 	if !checkFileExist(modulePath) && checkFileExist(modulePath + ".js") {
@@ -36,4 +40,15 @@ func Load(path string) ([]byte, error) {
 func checkFileExist(path string) bool {
 	_, err := os.Stat(filepath.FromSlash(path))
 	return !os.IsNotExist(err)
+}
+
+func InitNativeModules(registry *require.Registry) {
+	nativeModules := []modules.Module{
+		k8s.New(),
+		k8s.NewDeploymentFactory(),
+	}
+
+	for _, module := range nativeModules {
+		registry.RegisterNativeModule("felloe/" + module.Name, module.ModuleLoader)
+	}
 }

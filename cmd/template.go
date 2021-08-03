@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"felloe/compiler"
+	"felloe/helpers"
 	"felloe/js"
 	"felloe/js/loader"
 	"felloe/logger"
@@ -13,21 +14,21 @@ import (
 	"io/ioutil"
 )
 
-var runCmd = &cobra.Command{
-	Use: "run [script]",
-	Short: "Run a script",
+var templateCmd = &cobra.Command{
+	Use: "template [script]",
+	Short: "Run a script and display output without deploying",
 	Args: cobra.MinimumNArgs(1),
-	RunE: run,
+	RunE: template,
 
 }
 
 func init() {
-	rootCmd.AddCommand(runCmd)
+	rootCmd.AddCommand(templateCmd)
 }
 
-var defaultFn func() []interface{}
+var defaultFn func() []helpers.GenericManifest
 
-func run(cmd *cobra.Command, args []string) error {
+func template(cmd *cobra.Command, args []string) error {
 	fileContent, err := ioutil.ReadFile(args[0])
 	if err != nil {
 		return fmt.Errorf("couldn't open %v", args[0])
@@ -67,7 +68,9 @@ func run(cmd *cobra.Command, args []string) error {
 	yamlOutput := ""
 	res := defaultFn()
 
-	for _, k8sObject := range res {
+	sorted := helpers.SortManifests(res)
+
+	for _, k8sObject := range sorted {
 		y, err := yaml.Marshal(&k8sObject)
 		if err != nil {
 			return err
@@ -77,10 +80,6 @@ func run(cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Println(yamlOutput)
-
-
-
-
 
 	return nil
 }

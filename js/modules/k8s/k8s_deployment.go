@@ -24,7 +24,7 @@ func NewDeployment(args ...goja.Value) *v1.Deployment {
 	deploymentImage := ""
 
 	if len(args) < 2 {
-		panic("")
+		panic("expected name and image")
 	}
 
 	deploymentName = args[0].String()

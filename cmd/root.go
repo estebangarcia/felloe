@@ -34,7 +34,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&KubeNamespace, "namespace", "n", "", "namespace scope")
 	rootCmd.PersistentFlags().StringVar(&KubeConfigContext, "kube-context","", "name of the kubeconfig context to use")
-	rootCmd.PersistentFlags().StringVarP(&logLevel, "loglevel", "l", "info", "set logger level [trace, debug, info, error, fatal]")
+	rootCmd.PersistentFlags().StringVarP(&logLevel, "loglevel", "l", "error", "set logger level [trace, debug, info, error, fatal]")
 
 	viper.BindPFlags(rootCmd.PersistentFlags())
 }

@@ -1,21 +1,24 @@
-import { Client } from 'felloe/k8s';
+import Calc from './module';
+import { Client, Namespace } from 'felloe/k8s';
 import { DeploymentFactory } from 'felloe/k8s/deployment'
 
 export default function() {
 
+    var a = new Calc();
+    console.error(a.sum(1,1));
 
-    var podList = Client.listPods("");
-    for(var i = 0; i < podList.length; i++) {
+    let podList = Client.listPods("");
+    for(let i = 0; i < podList.length; i++) {
         console.log(podList[i].name);
     }
 
     console.log("----");
     podList = Client.listPods("kube-system");
-    for(var i = 0; i < podList.length; i++) {
+    for(let i = 0; i < podList.length; i++) {
         console.log(podList[i].name);
     }
 
-    var deployment = DeploymentFactory.name("deployment")
+    let deployment = DeploymentFactory.name("deployment")
         .namespace("spinnaker")
         .annotations({
             "environment": "production"
@@ -50,5 +53,7 @@ export default function() {
         ])
         .build();
 
-    return [deployment];
+    let namespace = new Namespace("spinnaker");
+
+    return [deployment, namespace];
 }

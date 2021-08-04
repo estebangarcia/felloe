@@ -45,6 +45,10 @@ func InitNativeModules(registry *require.Registry) {
 		k8s.New(),
 		k8s.NewDeploymentFactory(),
 		k8s.NewNamespaceFactory(),
+		k8s.NewPodFactory(),
+		k8s.NewStatefulSetFactory(),
+		k8s.NewConfigMapFactory(),
+		k8s.NewServiceFactory(),
 	}
 
 	for _, module := range nativeModules {

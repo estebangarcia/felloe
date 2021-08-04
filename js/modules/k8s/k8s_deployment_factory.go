@@ -95,7 +95,7 @@ func (df *DeploymentFactory) InitContainers(initContainers []v12.Container) *Dep
 }
 
 func (df *DeploymentFactory) AddInitContainer(initContainer v12.Container) *DeploymentFactory {
-	df.deployment.Spec.Template.Spec.InitContainers = append(df.deployment.Spec.Template.Spec.Containers, initContainer)
+	df.deployment.Spec.Template.Spec.InitContainers = append(df.deployment.Spec.Template.Spec.InitContainers, initContainer)
 	return df
 }
 
@@ -109,7 +109,7 @@ func (df *DeploymentFactory) AddContainer(container v12.Container) *DeploymentFa
 	return df
 }
 
-func (df *DeploymentFactory) Build() *v1.Deployment{
+func (df *DeploymentFactory) Build() *v1.Deployment {
 	d := df.deployment
 	df.deployment = newDeployment()
 	return d

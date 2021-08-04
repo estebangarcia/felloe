@@ -36,8 +36,7 @@ export default function() {
     let calc = new Calc();
     console.info(calc.sum(1,1));
     
-    let resourcesToDeploy = [];    
-
+    let resourcesToDeploy = [];
 
     let namespaces = Client.listNamespaces();
     if(namespaces.length == 2) {

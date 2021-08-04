@@ -15,6 +15,10 @@ import (
 var moduleConstructors = map[string]func(rt *goja.Runtime, mod *goja.Object) func(call goja.ConstructorCall) *goja.Object{
 	"Deployment": deploymentConstructor,
 	"Namespace": namespaceConstructor,
+	"Pod": podConstructor,
+	"StatefulSet": statefulSetConstructor,
+	"ConfigMap": configMapConstructor,
+	"Service": serviceConstructor,
 }
 
 type K8s struct {

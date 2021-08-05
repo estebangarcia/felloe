@@ -1,17 +1,12 @@
 package cmd
 
 import (
-	"felloe/compiler"
 	"felloe/helpers"
 	"felloe/js"
-	"felloe/js/loader"
-	"felloe/logger"
+	"felloe/js/compiler"
 	"fmt"
-	"github.com/dop251/goja"
-	"github.com/dop251/goja_nodejs/require"
 	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
-	"io/ioutil"
 )
 
 var templateCmd = &cobra.Command{
@@ -29,31 +24,13 @@ func init() {
 var defaultFn func() []helpers.GenericManifest
 
 func template(cmd *cobra.Command, args []string) error {
-	fileContent, err := ioutil.ReadFile(args[0])
-	if err != nil {
-		return fmt.Errorf("couldn't open %v", args[0])
-	}
 
-	c, err := compiler.New()
+	compiled, err := compiler.CompileScript(args[0])
 	if err != nil {
 		return err
 	}
 
-	compiled, err := c.Transform(string(fileContent))
-	if err != nil {
-		return err
-	}
-
-	registry := require.NewRegistryWithLoader(loader.Load)
-	loader.InitNativeModules(registry)
-
-	vm := goja.New()
-	vm.SetFieldNameMapper(goja.UncapFieldNameMapper())
-	vm.Set("console", js.NewJSConsole(logger.GetLogger()))
-	registry.Enable(vm)
-
-	exports := vm.NewObject()
-	_ = vm.Set("exports", exports)
+	vm := js.GetRuntime()
 
 	_, err = vm.RunScript(args[0], compiled)
 	if err != nil {

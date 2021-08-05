@@ -13,7 +13,7 @@ func TestBabelCompile(t *testing.T) {
 }
 
 func TestNewBabel(t *testing.T) {
-	babel, err := newBabel()
+	babel, err := getBabel()
 
 	assert.NoError(t, err)
 	assert.NotNil(t, babel.vm)

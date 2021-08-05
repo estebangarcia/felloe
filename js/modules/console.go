@@ -1,4 +1,4 @@
-package js
+package modules
 
 import (
 	"github.com/dop251/goja"

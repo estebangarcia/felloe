@@ -2,6 +2,7 @@ package compiler
 
 import (
 	"fmt"
+	"io/ioutil"
 )
 
 var (
@@ -29,7 +30,7 @@ type Compiler struct {
 }
 
 func New() (*Compiler, error) {
-	babel, err := newBabel()
+	babel, err := getBabel()
 	if err != nil {
 		return nil, fmt.Errorf("error running babel: %v", err.Error())
 	}
@@ -53,4 +54,23 @@ func (c Compiler) Transform(src string) (string, error) {
 	}
 
 	return code, nil
+}
+
+func CompileScript(path string) (string, error) {
+	fileContent, err := ioutil.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("couldn't open %v", path)
+	}
+
+	c, err := New()
+	if err != nil {
+		return "", err
+	}
+
+	compiled, err := c.Transform(string(fileContent))
+	if err != nil {
+		return "", err
+	}
+
+	return compiled, nil
 }
